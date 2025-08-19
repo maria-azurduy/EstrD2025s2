@@ -120,8 +120,9 @@ vieneDespues dia dia2 = indiceDia dia  > indiceDia dia2
 
 --Dado un día de la semana indica si no es ni el primer ni el ultimo dia.
 estaEnElMedio :: DiaDeSemana -> Bool
-
-
+estaEnElMedio primerDia = False
+estaEnElMedio ultimoDia = False
+estaEnElMedio _ = True 
 
 
 {-
@@ -135,7 +136,8 @@ Dado un booleano, si es True devuelve False, y si es False devuelve True.
 En Haskell ya está definida como not.
 -}
 negar :: Bool -> Bool
-
+negar True = False
+negar False = True 
 {-
 Dados dos booleanos, si el primero es True y el segundo es False, devuelve False, sino
 devuelve True.
