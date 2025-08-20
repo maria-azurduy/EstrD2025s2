@@ -16,7 +16,7 @@ para obtener el resto de la división utilizar la función mod :: Int -> Int -> 
 provista por Haskell.
 -}
 divisionYResto :: Int -> Int -> (Int, Int)
-divisionYResto n m = (div n m, mod (div n m))
+divisionYResto n m = (div n m, mod n m )
 
 --Dado un par de números devuelve el mayor de estos
 maxDelPar :: (Int,Int) -> Int
@@ -75,15 +75,17 @@ segunda componente es el último día de la semana. Considerar definir subtareas
 que puedan servir después.
 -}
 primeroYUltimoDia :: (DiaDeSemana, DiaDeSemana)
-primeroYUltimoDia (d1, d2) = (primerDia, ultimoDia)
+primeroYUltimoDia = (primerDia, ultimoDia)
 
-primerDia :: DiaDeSemana -> DiaDeSemana
-primerDia Lunes = True
-primerDia _ = False 
+-- subtareas 
 
-ultimoDia :: DiaDeSemana -> DiaDeSemana
-ultimoDia Domingo = True
-ultimoDia _ = False 
+primerDia :: DiaDeSemana
+
+primerDia = Lunes
+
+ultimoDia :: DiaDeSemana
+
+ultimoDia = Domingo
 
 
 --Dado un día de la semana indica si comienza con la letra M.
@@ -120,8 +122,8 @@ vieneDespues dia dia2 = indiceDia dia  > indiceDia dia2
 
 --Dado un día de la semana indica si no es ni el primer ni el ultimo dia.
 estaEnElMedio :: DiaDeSemana -> Bool
-estaEnElMedio primerDia = False
-estaEnElMedio ultimoDia = False
+estaEnElMedio Lunes = False
+estaEnElMedio Domingo = False
 estaEnElMedio _ = True 
 
 
@@ -145,7 +147,8 @@ Esta función NO debe realizar doble pattern matching.
 Nota: no viene implementada en Haskell.
 -}
 implica :: Bool -> Bool -> Bool
-
+implica True b = False
+implica False _ = True
 
 {-
 Dados dos booleanos si ambos son True devuelve True, sino devuelve False.
@@ -153,101 +156,120 @@ Esta función NO debe realizar doble pattern matching.
 En Haskell ya está definida como \&\&.
 -}
 yTambien :: Bool -> Bool -> Bool
-
+yTambien True b = b
+yTambien False _ = True 
 
 {-Dados dos booleanos si alguno de ellos es True devuelve True, sino devuelve False.
 Esta función NO debe realizar doble pattern matching.
 En Haskell ya está definida como ||.
 -}
 oBien :: Bool -> Bool -> Bool
-
+oBien True _ = True
+oBien False b = b 
 
 --REGISTROS
 
 -- Definir el tipo de dato Persona, como un nombre y la edad de la persona. Realizar las siguientes funciones:
 data Persona = P String Int
     deriving Show
-p1 = P "A" 25
-p2 = P "B" 33
+p1 = P "Pato" 25
+p2 = P "Beto" 33
+
 -- Devuelve el nombre de una persona
-nombre :: Persona -> String
+nombre :: Persona -> String          -- Estoy definiendo mi funcion observadora, del nombre de una persona
+nombre (P n e) = n
 
 -- Devuelve la edad de una persona
 edad :: Persona -> Int
+edad (P n e) = e
 
 -- Aumenta en uno la edad de la persona.
 crecer :: Persona -> Persona
+crecer (P n e) = P n (e +1)
 
 -- Dados un nombre y una persona, devuelve una persona con la edad de la persona y el nuevo nombre.
 cambioDeNombre :: String -> Persona -> Persona
+cambioDeNombre nom (P _ e) = P nom e 
 
 -- Dadas dos personas indica si la primera es mayor que la segunda.
 esMayorQueLaOtra :: Persona -> Persona -> Bool
+esMayorQueLaOtra (P _ e1) (P _ e2) = e1 > e2
 
 -- Dadas dos personas devuelve a la persona que sea mayor
 laQueEsMayor :: Persona -> Persona -> Persona
-
+laQueEsMayor p1@(P _ e1) p2@(P _ e2) = if e1 > e2 then p1 else p2
 
 {-
 Definir los tipos de datos Pokemon, como un TipoDePokemon (agua, fuego o planta) y un
 porcentaje de energía; y Entrenador, como un nombre y dos Pokémon. Luego definir las
 siguientes funciones:
 -}
-data Pokemon = ConsPokemon TipoDePokemon Int
-    deriving Show
-
 data TipoDePokemon = Agua | Fuego | Planta
-    deriving Show
+    deriving (Show, Eq)
+data Pokemon = PK TipoDePokemon Int -- TipoDePokemon Energia 
+    deriving (Show)
+data Entrenador = E String Pokemon Pokemon -- Nombre Pokemon Pokemon
+    deriving (Show)
 
-data Entrenador = ConsEntrenador String Pokemon Pokemon
-    deriving Show
+--ejemplos
 
-poke_1 = ConsPokemon Agua 1
-poke_2 = ConsPokemon Fuego 2
-poke_3 = ConsPokemon Agua 3
-poke_4 = ConsPokemon Fuego 4
-poke_5 = ConsPokemon Fuego 5
-poke_6 = ConsPokemon Planta 6
-poke_7 = ConsPokemon Planta 7
-entrenador_1 =ConsEntrenador "A" poke_3 poke_1
-entrenador_2 =ConsEntrenador "B" poke_2 poke_4
-entrenador_3 =ConsEntrenador "C" poke_2 poke_3
-entrenador_4 =ConsEntrenador "D" poke_1 poke_6
-entrenador_5 =ConsEntrenador "E" poke_1 poke_3
+maria = E "Maria" picachu roan
+juan = E "Juan" aries santi 
 
+
+picachu = PK Fuego 24 
+roan = PK Planta 12
+aries = PK Agua 45
+santi = PK Fuego 42
 
 {-
 Dados dos Pokémon indica si el primero, en base al tipo, es superior al segundo. Agua
 supera a fuego, fuego a planta y planta a agua. Y cualquier otro caso es falso.
 -}
 superaA :: Pokemon -> Pokemon -> Bool
+superaA (PK tp1 int) (PK tp2 int1) = if tp1 == Agua && tp2 == Fuego then True 
+                                     else if tp1 == Fuego && tp2 == Planta then True 
+                                     else if tp1 == Planta && tp2 == Agua then True
+                                    else False 
 
 
+cantidadDePokemonDe :: TipoDePokemon-> Entrenador-> Int -- Devuelve la cantidad de Pokémon de determinado tipo que posee el entrenador.
+-- Solucion inicial
 
---Devuelve la cantidad de Pokémon de determinado tipo que posee el entrenador.
-cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
+cantidadDePokemonDe tipo (E _ pk1 pk2) = (if tipoDe pk1 == tipo
+                                            then 1
+                                            else 0) 
+                                        +
 
+                                        (if tipoDe pk2 == tipo
+                                            then 1
+                                            else 0)
 
+tipoDe :: Pokemon -> TipoDePokemon -- Devuelve el tipo del pokemon 
+
+tipoDe (PK tp _) = tp 
 
 --Dado un par de entrenadores, devuelve a sus Pokémon en una lista.
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
+juntarPokemon (e1, e2) =  pokemonesDe e1 ++ pokemonesDe e2
 
-
+pokemonesDe :: Entrenador -> [Pokemon] 
+pokemonesDe (E _ pk1 pk2) = pk1 : [pk2]
 
 --FUNCIONES POLIMORFICAS
 
 -- 1. Defina las siguientes funciones polimórficas:
 --Dado un elemento de algún tipo devuelve ese mismo elemento.
 loMismo :: a -> a
-
+loMismo x = x
 
 --Dado un elemento de algún tipo devuelve el número 7.
 siempreSiete :: a -> Int
-
+siempreSiete x = 7
 
 --Dadas una tupla, invierte sus componentes.
 swap :: (a,b) -> (b, a)
-
+swap (x,y) = (y,x)
 
 
 
@@ -261,24 +283,26 @@ utilizar las funciones que ya vienen con Haskell):
 --Dada una lista de elementos, si es vacía devuelve True, sino devuelve False.
 --Definida en Haskell como null
 estaVacia :: [a] -> Bool
-
+estaVacia [] = True
+estaVacia _  = False
 
 --Dada una lista devuelve su primer elemento.
 --Definida en Haskell como head.
---Nota: tener en cuenta que el constructor de listas es :
-elPrimero :: [a] -> a
 -- Precondicion: la lista NO debe ser vacía
+elPrimero :: [a] -> a
+elPrimero []    = error "elPrimero no se puede usar con []"
+elPrimero (x:_) = x
 
 
 --Dada una lista devuelve esa lista menos el primer elemento.
 --Definida en Haskell como tail.
---Nota: tener en cuenta que el constructor de listas es :
 sinElPrimero :: [a] -> [a]
-
+sinElPrimero (x:xs) = xs
+sinElPrimero _     = []  
 
 --Dada una lista devuelve un par, donde la primera componente es el primer elemento de la
 --lista, y la segunda componente es esa lista pero sin el primero.
---Nota: tener en cuenta que el constructor de listas es :
-splitHead :: [a] -> (a, [a])
 -- Precondicion: la lista NO debe ser vacía
-
+splitHead :: [a] -> (a, [a])
+splitHead _ = error "elPrimero no se puede usar con []"
+splitHead xs = (elPrimero xs, sinElPrimero xs)
