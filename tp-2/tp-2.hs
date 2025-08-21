@@ -2,24 +2,42 @@
 -- Defina las siguientes funciones utilizando recursión estructural sobre listas, salvo que se indique lo contrario:
 -- Dada una lista de enteros devuelve la suma de todos sus elementos.
 sumatoria :: [Int] -> Int
+sumatoria []     = 0
+sumatoria (x:xs) = x + sumatoria xs
 
 -- Dada una lista de elementos de algún tipo devuelve el largo de esa lista, es decir, la cantidad de elementos que posee.
 longitud :: [a] -> Int
+longitud []     = 0
+longitud (x:xs) = 1 + longitud xs
 
 -- Dada una lista de enteros, devuelve la lista de los sucesores de cada entero.
 sucesores :: [Int] -> [Int]
+sucesores []     = []
+sucesores (x:xs) = sucesor x ++ sucesores xs 
 
 -- Dada una lista de booleanos devuelve True si todos sus elementos son True.
 conjuncion :: [Bool] -> Bool
+conjuncion []     = False 
+conjuncion (b:bs) = esVerdadero b &&  conjuncion bs
+
+esVerdadero :: Bool -> Bool
+esVerdadero True = True
+esVerdadero _    = False
 
 -- Dada una lista de booleanos devuelve True si alguno de sus elementos es True.
 disyuncion :: [Bool] -> Bool
+disyuncion []     = False
+disyuncion (b:bs) = esVerdadero b || disyuncion bs
 
 -- Dada una lista de listas, devuelve una única lista con todos sus elementos.
 aplanar :: [[a]] -> [a]
+aplanar [[]]     = []
+aplanar [(x:xs)] = 
 
 -- Dados un elemento e y una lista xs devuelve True si existe un elemento en xs que sea igual a e.
 pertenece :: Eq a => a -> [a] -> Bool
+pertenece x []     =  
+pertenece x (y:ys) = 
 
 -- Dados un elemento e y una lista xs cuenta la cantidad de apariciones de e en xs.
 apariciones :: Eq a => a -> [a] -> Int
@@ -32,9 +50,13 @@ lasDeLongitudMayorA :: Int -> [[a]] -> [[a]]
 
 -- Dados una lista y un elemento, devuelve una lista con ese elemento agregado al ?nal de la lista.
 agregarAlFinal :: [a] -> a -> [a]
+agregarAlFinal [] x   = [x]
+agregarAlFinal (x:xs) = agregarAlFinal xs ++ x
 
 -- Dadas dos listas devuelve la lista con todos los elementos de la primera lista y todos los elementos de la segunda a continuación. De?nida en Haskell como (++).
 agregar :: [a] -> [a] -> [a]
+agregar [] ys = [ys]
+agregar (x:xs) ys = x + agregar xs ys 
 
 -- Dada una lista devuelve la lista con los mismos elementos de atrás para adelante. Definida en Haskell como reverse.
 reversa :: [a] -> [a]
@@ -74,7 +96,11 @@ sinLosPrimeros :: Int -> [a] -> [a]
 mayoresA :: Int -> [Persona] -> [Persona]
 
 -- Dada una lista de personas devuelve el promedio de edad entre esas personas. Precondición: la lista al menos posee una persona.
-promedioEdad :: [Persona] -> Int
+promedioEdad :: [Persona] -> Int 
+promedioEdad (p:ps)  = div sumarTodos ps p 
+
+sumarTodos :: Persona -> [Persona] -> Int
+sumarTodos (p:ps) = edad p + sumarTodos ps 
 
 -- Dada una lista de personas devuelve la persona más vieja de la lista. Precondición: la lista al menos posee una persona.
 elMasViejo :: [Persona] -> Persona
