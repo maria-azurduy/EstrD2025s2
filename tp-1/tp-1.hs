@@ -290,7 +290,6 @@ estaVacia _  = False
 --Definida en Haskell como head.
 -- Precondicion: la lista NO debe ser vacía
 elPrimero :: [a] -> a
-elPrimero []    = error "elPrimero no se puede usar con []"
 elPrimero (x:_) = x
 
 
@@ -298,11 +297,9 @@ elPrimero (x:_) = x
 --Definida en Haskell como tail.
 sinElPrimero :: [a] -> [a]
 sinElPrimero (x:xs) = xs
-sinElPrimero _     = []  
 
 --Dada una lista devuelve un par, donde la primera componente es el primer elemento de la
 --lista, y la segunda componente es esa lista pero sin el primero.
 -- Precondicion: la lista NO debe ser vacía
 splitHead :: [a] -> (a, [a])
-splitHead _ = error "elPrimero no se puede usar con []"
 splitHead xs = (elPrimero xs, sinElPrimero xs)
