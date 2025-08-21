@@ -146,8 +146,8 @@ Esta función NO debe realizar doble pattern matching.
 Nota: no viene implementada en Haskell.
 -}
 implica :: Bool -> Bool -> Bool
-implica True False = False
-implica _ _        = True
+implica True b = b
+implica False b = True
 
 {-
 Dados dos booleanos si ambos son True devuelve True, sino devuelve False.
