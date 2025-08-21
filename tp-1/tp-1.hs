@@ -58,7 +58,6 @@ siguiente :: Dir -> Dir
 siguiente Norte = Este 
 siguiente Este = Sur
 siguiente Sur = Oeste 
-siguiente Oeste = Norte 
 
 {-
 Definir el tipo de dato DiaDeSemana, con las alternativas Lunes, Martes, Miércoles, Jueves,
@@ -92,7 +91,7 @@ ultimoDia = Domingo
 empiezaConM :: DiaDeSemana -> Bool
 empiezaConM Miercoles = True
 empiezaConM Martes    = True
-
+empiezaConM _         = False
 
 {-
 Dado dos días de semana, indica si el primero viene después que el segundo. Analizar
@@ -147,8 +146,8 @@ Esta función NO debe realizar doble pattern matching.
 Nota: no viene implementada en Haskell.
 -}
 implica :: Bool -> Bool -> Bool
-implica True b = False
-implica False _ = True
+implica True False = False
+implica _ _        = True
 
 {-
 Dados dos booleanos si ambos son True devuelve True, sino devuelve False.
@@ -157,7 +156,7 @@ En Haskell ya está definida como \&\&.
 -}
 yTambien :: Bool -> Bool -> Bool
 yTambien True b = b
-yTambien False _ = True 
+yTambien False _ = False
 
 {-Dados dos booleanos si alguno de ellos es True devuelve True, sino devuelve False.
 Esta función NO debe realizar doble pattern matching.
