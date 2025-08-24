@@ -97,48 +97,101 @@ minimo x y = if x > y then x else y
 -- Defina las siguientes funciones utilizando recursión sobre números enteros, salvo que se indique lo contrario:
 -- Dado un número n se devuelve la multiplicación de este número y todos sus anteriores hasta llegar a 0. Si n es 0 devuelve 1. La función es parcial si n es negativo.
 factorial :: Int -> Int
+factorial 0 = 1
+factorial n = n * factorial n - 1
 
 --Dado un número n devuelve una lista cuyos elementos sean los números comprendidos entre n y 1 (incluidos). Si el número es inferior a 1, devuelve la lista vacía.
 cuentaRegresiva :: Int -> [Int]
+cuentaRegresiva n = if n < 1 then [] else n : cuentaRegresiva (n - 1)
 
 -- Dado un número n y un elemento e devuelve una lista en la que el elemento e repite n veces.
 repetir :: Int -> a -> [a]
+repetir 0 _ = []
+repetir n e = e : repetir (n -1) e 
 
 -- Dados un número n y una lista xs, devuelve una lista con los n primeros elementos de xs.
 -- Si la lista es vacía, devuelve una lista vacía.
 losPrimeros :: Int -> [a] -> [a]
+losPrimeros _ []     = []
+losPrimeros 0 _      = [] 
+losPrimeros n (x:xs) = x: losPrimeros (n -1) xs 
 
 -- Dados un número n y una lista xs, devuelve una lista sin los primeros n elementos de lista recibida. Si n es cero, devuelve la lista completa.
 sinLosPrimeros :: Int -> [a] -> [a]
+sinLosPrimeros _ []     = []
+sinLosPrimeros 0 xs     = xs
+sinLosPrimeros n (x:xs) = sinLosPrimeros (n-1) xs -- cuando llegue al 2do caso, me da la lista completa. lo que pide la funcion 
 
 -- 3. REGISTROS
 {-   
     3.1
     Definir el tipo de dato Persona, como un nombre y la edad de la persona. Realizar las siguientes funciones:
-    Dados una edad y una lista de personas devuelve a las personas mayores a esa edad.
+    
 -}
+
+data Persona = P String Int -- Nombre Edad 
+    deriving (Show, Eq)
+
+persona_1 = P "Amado" 20
+persona_2 = P "Beto" 30
+
+--
+edad :: Persona-> Int 
+edad (P n e) = e
+--
+
+--Dados una edad y una lista de personas devuelve a las personas mayores a esa edad.
 mayoresA :: Int -> [Persona] -> [Persona]
+mayoresA _ []     = []                                                         -- si la lista es vacia no tengo personas que comprobar
+mayoresA n (p:ps) = if edad p > n then p: mayoresA n ps else mayoresA n ps    
 
 -- Dada una lista de personas devuelve el promedio de edad entre esas personas. Precondición: la lista al menos posee una persona.
 promedioEdad :: [Persona] -> Int 
-promedioEdad (p:ps)  = div sumarTodos ps p 
+promedioEdad ps  = div (edadesDe ps) longitud ps
 
-sumarTodos :: Persona -> [Persona] -> Int
-sumarTodos (p:ps) = edad p + sumarTodos ps 
+-- Dada una lista de personas devuelve la sumatoria de edad entre esas personas. Precondición: la lista al menos posee una persona.
+edadesDe :: [Persona] -> Int 
+edadesDe (p:ps) = edad p + edadesDe ps 
 
 -- Dada una lista de personas devuelve la persona más vieja de la lista. Precondición: la lista al menos posee una persona.
 elMasViejo :: [Persona] -> Persona
+elMasViejo [p]    = p
+elMasViejo ps = laQueEsMayor (head ps) (segundo ps) -- recursion  
+
+--aux
+
+-- Dadas dos personas devuelve a la persona que sea mayor
+laQueEsMayor :: Persona -> Persona -> Persona
+laQueEsMayor p1@(P _ e1) p2@(P _ e2) = if e1 > e2 then p1 else p2
+
+--
+segundo :: [a] -> a
+segundo (_:x:_) = x
+segundo _       = error "No hay 2 elementos"
+
+--fin aux
+
 
 {-
     3.2
-    Modificaremos la representación de Entreador y Pokemon de la práctica anterior de la siguiente manera:
+    Modificaremos la representación de Entreador y Pokemon de la práctica anterior, ahora los entrenadores tienen una cantidad de Pokemon arbitraria.
 -}
 
 data TipoDePokemon = Agua | Fuego | Planta
+    deriving (Show, Eq)
 data Pokemon = ConsPokemon TipoDePokemon Int
+    deriving Show
 data Entrenador = ConsEntrenador String [Pokemon]
+    deriving Show
 
--- Como puede observarse, ahora los entrenadores tienen una cantidad de Pokemon arbitraria.
+poke_1 = ConsPokemon Agua 50
+poke_2 = ConsPokemon Fuego 48
+poke_3 = ConsPokemon Agua 32
+poke_4 = ConsPokemon Fuego 32
+
+entrenador_1 = ConsEntrenador "A" [poke_3, poke_1, poke_2]
+entrenador_2 = ConsEntrenador "B" [poke_2, poke_4]
+
 -- Definir en base a esa representación las siguientes funciones:
 
 -- Devuelve la cantidad de Pokémon que posee el entrenador.
@@ -157,13 +210,29 @@ esMaestroPokemon :: Entrenador -> Bool
     3.3
     El tipo de dato Rol representa los roles (desarollo o management) de empleados IT dentro
     de una empresa de software, junto al proyecto en el que se encuentran. Así, una empresa es
-    una lista de personas con diferente rol. La de?nición es la siguiente:
+    una lista de personas con diferente rol. La definición es la siguiente:
 -}
 
 data Seniority = Junior | SemiSenior | Senior
+    deriving Show
+
 data Proyecto = ConsProyecto String
+    deriving Show
+
 data Rol = Developer Seniority Proyecto | Management Seniority Proyecto
+    deriving Show
+
 data Empresa = ConsEmpresa [Rol]
+    deriving Show
+
+
+proy1 = ConsProyecto "Proy A"
+proy2 = ConsProyecto "Proy B"
+
+rol1 = Developer Junior proy1
+rol2 = Management Senior proy2
+
+empresa = ConsEmpresa [rol1, rol2]
 
 -- Definir las siguientes funciones sobre el tipo Empresa:
 
