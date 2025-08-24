@@ -179,9 +179,9 @@ segundo _       = error "No hay 2 elementos"
 
 data TipoDePokemon = Agua | Fuego | Planta
     deriving (Show, Eq)
-data Pokemon = ConsPokemon TipoDePokemon Int
+data Pokemon = PK TipoDePokemon Int
     deriving Show
-data Entrenador = ConsEntrenador String [Pokemon]
+data Entrenador = E String [Pokemon]
     deriving Show
 
 poke_1 = ConsPokemon Agua 50
@@ -194,18 +194,60 @@ entrenador_2 = ConsEntrenador "B" [poke_2, poke_4]
 
 -- Definir en base a esa representación las siguientes funciones:
 
--- Devuelve la cantidad de Pokémon que posee el entrenador.
+-- Devuelve la cantidad de Pokémon que posee el entrenador. 1
 cantPokemon :: Entrenador -> Int
+cantPokemon (E _ ps) = longitud ps
 
--- Devuelve la cantidad de Pokémon de determinado tipo que posee el entrenador.
+-- Devuelve la cantidad de Pokémon de determinado tipo que posee el entrenador. 2
 cantPokemonDe :: TipoDePokemon -> Entrenador -> Int
+cantPokemonDe tipo (E _ ps) =  cantPokemonDeTipo tipo ps
+
+cantPokemonDe :: TipoDePokemon -> [Pokemon] -> Int
+cantPokemonDe _      []   = 0 
+cantPokemonDe tipo (p:ps) = unoSiEsDeTipo (tipo p) + cantPokemonDe tipo ps
+
+unoSiEsDeTipo :: TipoDePokemon -> Pokemon -> Int
+unoSiEsDeTipo tipo p = if tipo == tipoDe p then 1 else 0
+
+--
+tipoDe :: Pokemon -> TipoDePokemon -- Devuelve el tipo del pokemon 
+tipoDe (PK tp _) = tp 
+--
 
 -- Dados dos entrenadores, indica la cantidad de Pokemon de cierto tipo pertenecientes al primer entrenador, que le ganarían a todos los Pokemon del segundo entrenador.
 cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> Int
+cuantosDeTipo_De_LeGananATodosLosDe_ tipo (E _ ps1) (E _ ps2) = cuantosDeTipo_En_LeGananA tipo ps1 ps2 
+
+cuantosDeTipo_En_LeGananA :: TipoDePokemon ->  [Pokemon] -> [Pokemon] -> Int
+cuantosDeTipo_En_LeGananA tipo []     _   = 0
+cuantosDeTipo_En_LeGananA tipo xs     []  = cantPokemonDe tipo xs 
+cuantosDeTipo_En_LeGananA tipo (x:xs) ys  = if tipoDe x == tipo --aca filtro ya el tipo! 
+                                            then unoSiLeGana_ATodos x ys + cuantosDeTipo_En_LeGananA tipo xs ys 
+                                            else cuantosDeTipo_En_LeGananA tipo xs ys
+
+unoSiLeGana_ATodos :: Pokemon -> [Pokemon] -> Int
+unoSiLeGana_ATodos x (y:ys) =  unoSi_SuperaA_ x y * unoSiLeGana_ATodos tipo x ys
+
+unoSi_SuperaA_ :: Pokemon -> Pokemon -> Int
+unoSi_SuperaA_ x y (PK tp1 _) (PK tp2 _) = unoSiEsTipoSuperior tp1 tp2 
+
+unoSiEsTipoSuperior :: TipoDePokemon -> TipoDePokemon -> Int
+-- Dados dos tipos de Pokemon, devuelve 1 si el primero es superior al segundo
+unoSiEsTipoSuperior Agua   Fuego  = 1
+unoSiEsTipoSuperior Fuego  Planta = 1
+unoSiEsTipoSuperior Planta Agua   = 1
+unoSiEsTipoSuperior   _      _    = 0
 
 -- Dado un entrenador, devuelve True si posee al menos un Pokémon de cada tipo posible.
 esMaestroPokemon :: Entrenador -> Bool
+esMaestroPokemon (E _ ps) = hayTodosLosTiposDePokemonesEn ps
 
+hayTodosLosTiposDePokemonesEn :: [Pokemon] -> Bool
+hayTodosLosTiposDePokemonesEn [] = False 
+hayTodosLosTiposDePokemonesEn ps = hayPokemonDeTipo Agua ps && hayPokemonDeTipo Fuego ps && hayPokemonDeTipo Planta ps
+
+hayPokemonDeTipo ::  TipoDePokemon ->  [Pokemon] -> Bool
+hayPokemonDeTipo tipo (p:ps) = tipoDe p == tipo || hayPokemonDeTipo tipo ps
 {-
     3.3
     El tipo de dato Rol representa los roles (desarollo o management) de empleados IT dentro
