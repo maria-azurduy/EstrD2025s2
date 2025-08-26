@@ -1,3 +1,4 @@
+
 --  1. RECURSION SOBRE LISTAS
 -- Defina las siguientes funciones utilizando recursión estructural sobre listas, salvo que se indique lo contrario:
 -- Dada una lista de enteros devuelve la suma de todos sus elementos.
@@ -56,7 +57,7 @@ apariciones e (x:xs) = if e == x then 1 + apariciones e xs else apariciones e xs
 -- Dados un número n y una lista xs, devuelve todos los elementos de xs que son menores a n.
 losMenoresA :: Int -> [Int] -> [Int]
 losMenoresA n []     =  []
-losMenoresA n (x:xs) =  if x < n then x : losMenoresA n xs else losMenoresA xs
+losMenoresA n (x:xs) =  if x < n then x : losMenoresA n xs else losMenoresA n xs
 
 -- Dados un número n y una lista de listas, devuelve la lista de aquellas listas que tienen más de n elementos.
 lasDeLongitudMayorA :: Int -> [[a]] -> [[a]]
@@ -65,13 +66,13 @@ lasDeLongitudMayorA n (xs:xss) = if longitud xs > n then xs : lasDeLongitudMayor
 
 -- Dados una lista y un elemento, devuelve una lista con ese elemento agregado al final de la lista. TRIKYYYYYYY
 agregarAlFinal :: [a] -> a -> [a]
-agregarAlFinal [] x   = [x]
-agregarAlFinal (x:xs) = x : agregarAlFinal xs 
+agregarAlFinal []     e  = [e]
+agregarAlFinal (x:xs) e  = x : agregarAlFinal xs e
 
 -- Dadas dos listas devuelve la lista con todos los elementos de la primera lista y todos los elementos de la segunda a continuación. Definida en Haskell como (++).
 agregar :: [a] -> [a] -> [a]
-agregar [] ys = [ys]
-agregar (x:xs) ys = x + agregar xs ys 
+agregar []      ys = ys
+agregar (x:xs)  ys = x : agregar xs ys
 
 -- Dada una lista devuelve la lista con los mismos elementos de atrás para adelante. Definida en Haskell como reverse.
 reversa :: [a] -> [a]
@@ -147,10 +148,12 @@ mayoresA n (p:ps) = if edad p > n then p: mayoresA n ps else mayoresA n ps
 
 -- Dada una lista de personas devuelve el promedio de edad entre esas personas. Precondición: la lista al menos posee una persona.
 promedioEdad :: [Persona] -> Int 
-promedioEdad ps  = div (edadesDe ps) longitud ps
+promedioEdad ps  = div ((sumatoria edadesDe ps) longitud ps)
 
 -- Dada una lista de personas devuelve la sumatoria de edad entre esas personas. Precondición: la lista al menos posee una persona.
 edadesDe :: [Persona] -> Int 
+edadesDe []     = error "La lista no puede ser vacia"
+edadesDe [p]    = [edad p]
 edadesDe (p:ps) = edad p + edadesDe ps 
 
 -- Dada una lista de personas devuelve la persona más vieja de la lista. Precondición: la lista al menos posee una persona.
@@ -184,13 +187,13 @@ data Pokemon = PK TipoDePokemon Int
 data Entrenador = E String [Pokemon]
     deriving Show
 
-poke_1 = ConsPokemon Agua 50
-poke_2 = ConsPokemon Fuego 48
-poke_3 = ConsPokemon Agua 32
-poke_4 = ConsPokemon Fuego 32
+poke_1 = PK Agua 50
+poke_2 = PK Fuego 48
+poke_3 = PK Agua 32
+poke_4 = PK Fuego 32
 
-entrenador_1 = ConsEntrenador "A" [poke_3, poke_1, poke_2]
-entrenador_2 = ConsEntrenador "B" [poke_2, poke_4]
+entrenador_1 = E "A" [poke_3, poke_1, poke_2]
+entrenador_2 = E "B" [poke_2, poke_4]
 
 -- Definir en base a esa representación las siguientes funciones:
 
@@ -200,11 +203,11 @@ cantPokemon (E _ ps) = longitud ps
 
 -- Devuelve la cantidad de Pokémon de determinado tipo que posee el entrenador. 2
 cantPokemonDe :: TipoDePokemon -> Entrenador -> Int
-cantPokemonDe tipo (E _ ps) =  cantPokemonDeTipo tipo ps
+cantPokemonDe tipo (E _ ps) =  cantPokemonDeP tipo ps
 
-cantPokemonDe :: TipoDePokemon -> [Pokemon] -> Int
-cantPokemonDe _      []   = 0 
-cantPokemonDe tipo (p:ps) = unoSiEsDeTipo (tipo p) + cantPokemonDe tipo ps
+cantPokemonDeP :: TipoDePokemon -> [Pokemon] -> Int
+cantPokemonDeP _      []   = 0 
+cantPokemonDeP tipo (p:ps) = unoSiEsDeTipo (tipo p) + cantPokemonDeP tipo ps
 
 unoSiEsDeTipo :: TipoDePokemon -> Pokemon -> Int
 unoSiEsDeTipo tipo p = if tipo == tipoDe p then 1 else 0
@@ -258,34 +261,64 @@ hayPokemonDeTipo tipo (p:ps) = tipoDe p == tipo || hayPokemonDeTipo tipo ps
 data Seniority = Junior | SemiSenior | Senior
     deriving Show
 
-data Proyecto = ConsProyecto String
+data Proyecto = PR String
     deriving Show
 
 data Rol = Developer Seniority Proyecto | Management Seniority Proyecto
     deriving Show
 
-data Empresa = ConsEmpresa [Rol]
+data Empresa = EM [Rol]
     deriving Show
 
 
-proy1 = ConsProyecto "Proy A"
-proy2 = ConsProyecto "Proy B"
+proy1 = PR "Proy A"
+proy2 = PR "Proy B"
 
 rol1 = Developer Junior proy1
 rol2 = Management Senior proy2
 
-empresa = ConsEmpresa [rol1, rol2]
+empresa = EM [rol1, rol2]
 
 -- Definir las siguientes funciones sobre el tipo Empresa:
 
 -- Dada una empresa denota la lista de proyectos en los que trabaja, sin elementos repetidos.
 proyectos :: Empresa -> [Proyecto]
+proyectos (EM rs) = proyectosDe rs
+
+proyectosDe :: [Rol] -> [Proyecto] 
+proyectosDe []     = []
+proyectosDe (r:rs) = agregarAProyectoDe_SiNoEstaEn (proyectoDeRol r) (proyectosDe rs)
+
+agregarAProyectoDe_SiNoEstaEn :: Rol -> [Proyecto] -> [Proyecto]
+agregarAProyectoDe_SiNoEstaEn r  ps = if pertenece (proyectoDeRol r ps) then [] else r:[]
+
+proyectoDe :: Rol -> Proyecto  -- Dado un rol, devuelve el proyecto
+proyectoDe (Developer _ p) = p
+proyectoDe (Management _ p) = p
 
 -- Dada una empresa indica la cantidad de desarrolladores senior que posee, que pertecen además a los proyectos dados por parámetro.
 losDevSenior :: Empresa -> [Proyecto] -> Int
+losDevSenior (EM rs) ps = devSeniorDe_QueTrabajaronEn rs ps 
+
+devSeniorDe_QueTrabajaronEn :: [Rol] -> [Proyecto] -> Int
+devSeniorDe_QueTrabajaronEn [] _      = 0
+devSeniorDe_QueTrabajaronEn _ []      = 0
+devSeniorDe_QueTrabajaronEn (r:rs) ps = if esRolSeniorYTrabajoEn r ps 
+                                        then 1 + devSeniorDe_QueTrabajaronEn rs ps 
+                                        else devSeniorDe_QueTrabajaronEn rs ps 
+
 
 -- Indica la cantidad de empleados que trabajan en alguno de los proyectos dados.
 cantQueTrabajanEn :: [Proyecto] -> Empresa -> Int
+cantQueTrabajanEn ps (EM rs) = cantEmpleadosDe_QueTrabajanEnAlgun ps rs 
+
+cantEmpleadosDe_QueTrabajanEnAlgun :: [Proyecto] -> [Rol] -> Int
+cantEmpleadosDe_QueTrabajanEnAlgun [] _      = 0
+cantEmpleadosDe_QueTrabajanEnAlgun _ []      = 0
+cantEmpleadosDe_QueTrabajanEnAlgun ps (r:rs) = if esEmpleado_QueTrabajoEnAlgun r ps 
+                                               then 1 + cantEmpleadosDe_QueTrabajanEnAlgun ps rs 
+                                               else cantEmpleadosDe_QueTrabajanEnAlgun ps rs 
 
 -- Devuelve una lista de pares que representa a los proyectos (sin repetir) junto con su cantidad de personas involucradas.
-asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
+{- asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
+asignadosPorProyecto (EM rs) =  -}
