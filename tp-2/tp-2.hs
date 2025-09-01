@@ -308,7 +308,7 @@ proyectoPerteneceALaLista _ [] = False
 proyectoPerteneceALaLista x (n:ns) =  (nombreProy x)== (nombreProy n) || (proyectoPerteneceALaLista x ns)
 
 nombreProy :: Proyecto -> String
-nombreProy (ConsProyecto n) = n
+nombreProy (PR n) = n
 
 -- Dada una empresa indica la cantidad de desarrolladores senior que posee, que pertecen además a los proyectos dados por parámetro.
 losDevSenior :: Empresa -> [Proyecto] -> Int
@@ -365,4 +365,5 @@ esLaTupla p1 (p2, _) = nombreProy p1  == nombreProy p2
 
 sumarUnoA :: (Proyecto, Int) -> (Proyecto, Int) 
 sumarUnoA (p , n) = (p, n+1)
+
 
