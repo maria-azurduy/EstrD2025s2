@@ -1,155 +1,153 @@
+sumatoria :: [Int]-> Int --  Dada una lista de enteros devuelve la suma de todos sus elementos.
+sumatoria []     = 0 --mi caso base
+sumatoria (n:ns) = n + sumatoria ns
 
---  1. RECURSION SOBRE LISTAS
--- Defina las siguientes funciones utilizando recursión estructural sobre listas, salvo que se indique lo contrario:
--- Dada una lista de enteros devuelve la suma de todos sus elementos.
-sumatoria :: [Int] -> Int
-sumatoria []     = 0
-sumatoria (x:xs) = x + sumatoria xs
-
--- Dada una lista de elementos de algún tipo devuelve el largo de esa lista, es decir, la cantidad de elementos que posee.
-longitud :: [a] -> Int
+longitud :: [a]-> Int -- Dada una lista de elementos de algún tipo devuelve el largo de esa lista, es decir, la cantidad de elementos que posee
 longitud []     = 0
 longitud (x:xs) = 1 + longitud xs
 
--- Dada una lista de enteros, devuelve la lista de los sucesores de cada entero.
-sucesores :: [Int] -> [Int]
-sucesores []     = []
-sucesores (x:xs) = sucesor x : sucesores xs 
+sucesores :: [Int]-> [Int] -- Dada una lista de enteros, devuelve la lista de los sucesores de cada entero. 
+sucesores [] = []
+sucesores (n:ns) =  n+1 :  sucesores ns
 
-sucesor :: Int -> Int
-sucesor n = n + 1
+conjuncion :: [Bool]-> Bool -- Dada una lista de booleanos devuelve True si todos sus elementos son True.
+conjuncion [] = True
+conjuncion (b:bs) = b && (conjuncion bs)
 
--- Dada una lista de booleanos devuelve True si todos sus elementos son True.
-conjuncion :: [Bool] -> Bool
-conjuncion []     = False 
-conjuncion (b:bs) = esVerdadero b &&  conjuncion bs
 
-esVerdadero :: Bool -> Bool
-esVerdadero True = True
-esVerdadero _    = False
+disyuncion :: [Bool]-> Bool -- Dada una lista de booleanos devuelve True si alguno de sus elementos es True.
+disyuncion [] = False
+disyuncion (b:bs) = b || (disyuncion bs)
 
--- Dada una lista de booleanos devuelve True si alguno de sus elementos es True.
-disyuncion :: [Bool] -> Bool
-disyuncion []     = False
-disyuncion (b:bs) = esVerdadero b || disyuncion bs
 
--- Dada una lista de listas, devuelve una única lista con todos sus elementos.
-aplanar :: [[a]] -> [a]
-aplanar []      = []
+aplanar :: [[a]]-> [a] -- Dada una lista de listas, devuelve una única lista con todos sus elementos.
+aplanar [] = []
 aplanar (xs:xss) = unirListas xs (aplanar xss)
 
 --
-unirListas :: [a] -> [a] -> [a] -- voy a recorrer SOLO la 1ra lista
+unirListas :: [a] -> [a] -> [a] -- voy a recorrer la 1ra lista
 unirListas   []    ys = ys
 unirListas (x:xs)  ys = x : unirListas xs ys
 --
 
--- Dados un elemento e y una lista xs devuelve True si existe un elemento en xs que sea igual a e.
-pertenece :: Eq a => a -> [a] -> Bool
-pertenece e []     =  False
-pertenece e (x:xs) =  (e == x) || pertenece e xs
+pertenece :: Eq a => a -> [a] -> Bool --  Dados un elemento e y una lista xs devuelve True si existe un elemento en xs que sea igual a e.
+pertenece e [] = False
+pertenece e (x:xs) = (e == x) || pertenece e xs
 
--- Dados un elemento e y una lista xs cuenta la cantidad de apariciones de e en xs.
-apariciones :: Eq a => a -> [a] -> Int
-apariciones e []     = 0
-apariciones e (x:xs) = if e == x then 1 + apariciones e xs else apariciones e xs
 
--- Dados un número n y una lista xs, devuelve todos los elementos de xs que son menores a n.
-losMenoresA :: Int -> [Int] -> [Int]
-losMenoresA n []     =  []
-losMenoresA n (x:xs) =  if x < n then x : losMenoresA n xs else losMenoresA n xs
+apariciones :: Eq a => a-> [a]-> Int -- Dados un elemento e y una lista xs cuenta la cantidad de apariciones de e en xs.
+apariciones e [] = 0
+apariciones e (x:xs) = if x == e
+                        then 1 + apariciones e xs
+                        else apariciones e xs
 
--- Dados un número n y una lista de listas, devuelve la lista de aquellas listas que tienen más de n elementos.
-lasDeLongitudMayorA :: Int -> [[a]] -> [[a]]
-lasDeLongitudMayorA n []      =  []
-lasDeLongitudMayorA n (xs:xss) = if longitud xs > n then xs : lasDeLongitudMayorA n xss else lasDeLongitudMayorA n xss
+{- 
+apariciones e [] = 0
+apariciones e (x:_) = 1 + apariciones e xs
+apariciones e (_:xs) = apariciones e xs
 
--- Dados una lista y un elemento, devuelve una lista con ese elemento agregado al final de la lista. TRIKYYYYYYY
-agregarAlFinal :: [a] -> a -> [a]
-agregarAlFinal []     e  = [e]
-agregarAlFinal (x:xs) e  = x : agregarAlFinal xs e
+-}
 
--- Dadas dos listas devuelve la lista con todos los elementos de la primera lista y todos los elementos de la segunda a continuación. Definida en Haskell como (++).
-agregar :: [a] -> [a] -> [a]
+losMenoresA :: Int-> [Int]-> [Int] -- Dados un número n y una lista xs, devuelve todos los elementos de xs que son menores a n.
+losMenoresA k [] = []
+losMenoresA k (n:ns) = if k > n
+                        then n : losMenoresA k ns
+                        else losMenoresA k ns
+
+lasDeLongitudMayorA :: Int-> [[a]]-> [[a]] --  Dados un número n y una lista de listas, devuelve la lista de aquellas 
+                                           --listas que tienen más de n elementos.
+lasDeLongitudMayorA _ [] = []
+lasDeLongitudMayorA n (xs:xss) = if longitud xs > n
+                                    then xs : lasDeLongitudMayorA n xss
+                                    else lasDeLongitudMayorA n xss
+
+agregarAlFinal :: [a] -> a -> [a] --Dados una lista y un elemento, devuelve una lista con ese elemento agregado al final de la lista.
+agregarAlFinal [] e     = [e]
+agregarAlFinal (x:xs) e =   x :  agregarAlFinal xs e
+
+
+agregar :: [a]-> [a]-> [a] -- Dadas dos listas devuelve la lista con todos los elementos de la primera lista +  todos los elementos de la segunda a continuación.
 agregar []      ys = ys
 agregar (x:xs)  ys = x : agregar xs ys
 
--- Dada una lista devuelve la lista con los mismos elementos de atrás para adelante. Definida en Haskell como reverse.
-reversa :: [a] -> [a]
+
+reversa :: [a] -> [a] --Dada una lista devuelve la lista con los mismos elementos de atrás para adelante. Definida en Haskell como reverse.
 reversa []     = []
-reversa (x:xs) = agregarAlFinal (reversa xs)    x
-                              -- mi lista    mi elemento
+reversa (x:xs) = agregarAlFinal (reversa xs) x
 
--- Dadas dos listas de enteros, devuelve una lista donde el elemento en la posición n es el máximo entre el elemento n de la primera lista y de la segunda lista, teniendo en cuenta que
--- las listas no necesariamente tienen la misma longitud.
--- RECORRO DOS ESTRUCTURAS AL MISMO TIEMPO 
-zipMaximos :: [Int] -> [Int] -> [Int]
-zipMaximos is []         = is
-zipMaximos [] js         = js
-zipMaximos (i:is) (j:js) = if i > j then i : zipMaximos is js else j : zipMaximos is js
 
--- Dada una lista devuelve el mínimo -- obs: la lista NO puede ser vacía
-elMinimo :: Ord a => [a] -> a
-elMinimo [x]    = x
+zipMaximos :: [Int] -> [Int] -> [Int] --Dadas dos listas de enteros, devuelve una lista donde el elemento en la posición n es el
+                                        --máximo entre el elemento n de la primera lista y de la segunda lista, teniendo en cuenta que
+                                            --las listas no necesariamente tienen la misma longitud.
+zipMaximos []  ys = ys
+zipMaximos xs  [] = xs
+zipMaximos (x:xs) (y:ys) = if x>y then x : zipMaximos xs ys
+                                    else y : zipMaximos xs ys
+
+elMinimo :: Ord a => [a] -> a  --Dada una lista devuelve el mínimo
+                               -- obs: la lista NO puede ser vacía
+elMinimo [x] = x
 elMinimo (x:xs) = minimo x (elMinimo xs)
 
-minimo :: Ord a  => a -> a -> a
-minimo x y = if x > y then x else y
+minimo :: Ord a => a -> a -> a
+minimo x y =  if x < y 
+                then x 
+                else y
 
--- 2. RECURSION SOBRE NUMEROS
--- Defina las siguientes funciones utilizando recursión sobre números enteros, salvo que se indique lo contrario:
--- Dado un número n se devuelve la multiplicación de este número y todos sus anteriores hasta llegar a 0. Si n es 0 devuelve 1. La función es parcial si n es negativo.
-factorial :: Int -> Int
+--  2. Recursión sobre números -- 
+
+factorial :: Int-> Int --Dado un número n se devuelve la multiplicación de este número y todos sus anteriores hasta llegar a 0. 
+                        --Si n es 0 devuelve 1. 
+                        --La función es parcial si n es negativo.
+                        --Pre: n no puede ser negativo
+
 factorial 0 = 1
-factorial n = n * factorial n - 1
+factorial n = n * factorial (n-1)
 
---Dado un número n devuelve una lista cuyos elementos sean los números comprendidos entre n y 1 (incluidos). Si el número es inferior a 1, devuelve la lista vacía.
-cuentaRegresiva :: Int -> [Int]
-cuentaRegresiva n = if n < 1 then [] else n : cuentaRegresiva (n - 1)
+cuentaRegresiva :: Int-> [Int]  --Dado un número n devuelve una lista cuyos elementos sean los números comprendidos entre
+                                --n y 1 (incluidos). Si el número es inferior a 1, devuelve la lista vacía.
+cuentaRegresiva n = if n<1 then []
+                    else n : cuentaRegresiva (n-1)
 
--- Dado un número n y un elemento e devuelve una lista en la que el elemento e repite n veces.
-repetir :: Int -> a -> [a]
+repetir :: Int-> a-> [a] --Dado un número n y un elemento e devuelve una lista en la que el elemento e repite n veces.
 repetir 0 _ = []
-repetir n e = e : repetir (n -1) e 
+repetir n x = x : repetir (n-1) x
 
--- Dados un número n y una lista xs, devuelve una lista con los n primeros elementos de xs.
--- Si la lista es vacía, devuelve una lista vacía.
-losPrimeros :: Int -> [a] -> [a]
-losPrimeros _ []     = []
-losPrimeros 0 _      = [] 
-losPrimeros n (x:xs) = x: losPrimeros (n -1) xs 
+losPrimeros :: Int-> [a]-> [a] --Dados un número n y una lista xs, devuelve una lista con los n primeros elementos de xs.
+                               --Si la lista es vacía, devuelve una lista vacía.
+losPrimeros _ []         = []
+losPrimeros 0 _        = []
+losPrimeros n (x:xs)    = x : losPrimeros (n-1) xs
 
--- Dados un número n y una lista xs, devuelve una lista sin los primeros n elementos de lista recibida. Si n es cero, devuelve la lista completa.
-sinLosPrimeros :: Int -> [a] -> [a]
-sinLosPrimeros _ []     = []
-sinLosPrimeros 0 xs     = xs
-sinLosPrimeros n (x:xs) = sinLosPrimeros (n-1) xs -- cuando llegue al 2do caso, me da la lista completa. lo que pide la funcion 
+sinLosPrimeros :: Int-> [a]-> [a] -- Dados un número n y una lista xs, devuelve una lista sin los primeros n elementos de lista
+                                    --recibida. Si n es cero, devuelve la lista completa.
+sinLosPrimeros _ [] = []
+sinLosPrimeros 0 xs  = xs
+sinLosPrimeros n (x:xs) = sinLosPrimeros (n-1) xs
 
--- 3. REGISTROS
-{-   
-    3.1
-    Definir el tipo de dato Persona, como un nombre y la edad de la persona. Realizar las siguientes funciones:
-    
--}
+--  3. Registros --
+
+--1--
 
 data Persona = P String Int -- Nombre Edad 
     deriving (Show, Eq)
 
-persona_1 = P "Amado" 20
-persona_2 = P "Beto" 30
+persona_1 = P "A" 20
+persona_2 = P "B" 30
 
---
-edad :: Persona-> Int 
+edad :: Persona-> Int -- Estoy definiendo mi funcion observadora, de la edad de una persona
+
 edad (P n e) = e
---
 
---Dados una edad y una lista de personas devuelve a las personas mayores a esa edad.
-mayoresA :: Int -> [Persona] -> [Persona]
-mayoresA _ []     = []                                                         -- si la lista es vacia no tengo personas que comprobar
-mayoresA n (p:ps) = if edad p > n then p: mayoresA n ps else mayoresA n ps    
+mayoresA :: Int-> [Persona]-> [Persona] -- Dados una edad y una lista de personas devuelve a las personas mayores a esa edad.
+mayoresA 0 _        = []
+mayoresA n []       = []
+mayoresA n (p:ps)   = if edad p > n
+                            then p : mayoresA n ps
+                                        else mayoresA n ps
 
--- Dada una lista de personas devuelve el promedio de edad entre esas personas. Precondición: la lista al menos posee una persona.
-promedioEdad :: [Persona]-> Int 
+promedioEdad :: [Persona]-> Int -- Dada una lista de personas devuelve el promedio de edad entre esas personas. 
+                                -- Precondición: la lista al menos posee una persona
 promedioEdad ps = div (sumatoria (edades ps)) (longitud ps)
 
 edades :: [Persona] -> [Int]                --Dada una lista de personas, devuelve una lista con las edades de esas personas
@@ -158,58 +156,49 @@ edades []       = error "La lista no puede ser vacia"
 edades [p]      = [edad p]
 edades (p:ps)   = edad p : edades ps
 
--- Dada una lista de personas devuelve la persona más vieja de la lista. Precondición: la lista al menos posee una persona.
-elMasViejo :: [Persona] -> Persona
-elMasViejo [p]    = p
-elMasViejo ps = laQueEsMayor (head ps) (segundo ps) -- recursion  
-
---aux
-
--- Dadas dos personas devuelve a la persona que sea mayor
-laQueEsMayor :: Persona -> Persona -> Persona
-laQueEsMayor p1@(P _ e1) p2@(P _ e2) = if e1 > e2 then p1 else p2
-
---
-segundo :: [a] -> a
-segundo (_:x:_) = x
-segundo _       = error "No hay 2 elementos"
-
---fin aux
+sumarTodos :: [Persona] -> Int -- Dada una lista de personas devuelve la suma de edad entre esas personas.
+                               -- Precondición: la lista al menos posee una persona
+sumarTodos []     = error "La lista no puede ser vacia"
+sumarTodos [p]    = edad p
+sumarTodos (p:ps) = edad p + sumarTodos ps
 
 
-{-
-    3.2
-    Modificaremos la representación de Entreador y Pokemon de la práctica anterior, ahora los entrenadores tienen una cantidad de Pokemon arbitraria.
--}
+elMasViejo :: [Persona]-> Persona --Dada una lista de personas devuelve la persona más vieja de la lista. Precondición: la lista al menos posee una persona.
+elMasViejo []  = error "La lista no puede ser vacia"
+elMasViejo [p] = p
+elMasViejo ps  = laQueEsMayor (elPrimero ps) (elPrimero (sinElPrimero ps))
+
+
+--2--
 
 data TipoDePokemon = Agua | Fuego | Planta
     deriving (Show, Eq)
-data Pokemon = PK TipoDePokemon Int
+data Pokemon = ConsPokemon TipoDePokemon Int-- 
     deriving Show
-data Entrenador = E String [Pokemon]
+data Entrenador = ConsEntrenador String [Pokemon]
     deriving Show
 
-poke_1 = PK Agua 50
-poke_2 = PK Fuego 48
-poke_3 = PK Agua 32
-poke_4 = PK Fuego 32
+poke_1 = ConsPokemon Agua 50
+poke_2 = ConsPokemon Fuego 48
+poke_3 = ConsPokemon Agua 32
+poke_4 = ConsPokemon Fuego 32
 
-entrenador_1 = E "A" [poke_3, poke_1, poke_2]
-entrenador_2 = E "B" [poke_2, poke_4]
+entrenador_1 = ConsEntrenador "A" [poke_3, poke_1, poke_2]
+entrenador_2 = ConsEntrenador "B" [poke_2, poke_4]
+--a
 
--- Definir en base a esa representación las siguientes funciones:
+cantPokemon :: Entrenador-> Int --Devuelve la cantidad de Pokémon que posee el entrenador.
+cantPokemon (ConsEntrenador _ xs) = longitud xs
 
--- Devuelve la cantidad de Pokémon que posee el entrenador. 1
-cantPokemon :: Entrenador -> Int
-cantPokemon (E _ ps) = longitud ps
+--b
 
--- Devuelve la cantidad de Pokémon de determinado tipo que posee el entrenador. 2
+--Devuelve la cantidad de Pokémon de determinado tipo que posee el entrenador.
 cantPokemonDe :: TipoDePokemon -> Entrenador -> Int
-cantPokemonDe tipo (E _ ps) =  cantPokemonDeT tipo ps
+cantPokemonDe t (ConsEntrenador _ xs) = cantPokesDe t xs
 
-cantPokemonDeT :: TipoDePokemon -> [Pokemon] -> Int
-cantPokemonDeT _      []   = 0 
-cantPokemonDeT tipo (p:ps) = unoSiEsDeTipo tipo (tipoDe p) + cantPokemonDeT tipo ps
+cantPokesDe :: TipoDePokemon -> [Pokemon] -> Int
+cantPokesDe _ []     = 0
+cantPokesDe t (x:xs) = unoSiEsMismoTipo t (tipoDe x) + cantPokesDe t xs
 
 unoSiEsMismoTipo :: TipoDePokemon -> TipoDePokemon -> Int
 unoSiEsMismoTipo Agua Agua     = 1
@@ -218,28 +207,38 @@ unoSiEsMismoTipo Planta Planta = 1
 unoSiEsMismoTipo    _     _    = 0
 
 
---
-tipoDe :: Pokemon -> TipoDePokemon -- Devuelve el tipo del pokemon 
-tipoDe (PK tp _) = tp 
---
+--c
+cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon-> Entrenador-> Entrenador-> Int -- Dados dos entrenadores, indica la cantidad de Pokemon 
+                                                                                        -- de cierto tipo pertenecientes al primer entrenador, 
+                                                                                        -- que le ganarían a todos los Pokemon del segundo entrenador.
+cuantosDeTipo_De_LeGananATodosLosDe_ t (ConsEntrenador _ ps1) (ConsEntrenador _ ps2) = cantidadDeTipo_De_SuperanA_ t ps1 ps2
 
--- Dados dos entrenadores, indica la cantidad de Pokemon de cierto tipo pertenecientes al primer entrenador, que le ganarían a todos los Pokemon del segundo entrenador.
-cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> Int
-cuantosDeTipo_De_LeGananATodosLosDe_ tipo (E _ ps1) (E _ ps2) = cuantosDeTipo_En_LeGananA tipo ps1 ps2 
+cantidadDeTipo_De_SuperanA_ :: TipoDePokemon -> [Pokemon] -> [Pokemon] -> Int
+cantidadDeTipo_De_SuperanA_ t [] _          = 0
+cantidadDeTipo_De_SuperanA_ t xs []         = cantDeTipo t xs
+cantidadDeTipo_De_SuperanA_ t (x:xs) ys = if esDeTipo t (tipoDe x)
+                                            then unoSileGanaATodos x ys + cantidadDeTipo_De_SuperanA_ t xs ys
+                                            else cantidadDeTipo_De_SuperanA_ t xs ys
 
-cuantosDeTipo_En_LeGananA :: TipoDePokemon ->  [Pokemon] -> [Pokemon] -> Int
-cuantosDeTipo_En_LeGananA tipo []     _   = 0
-cuantosDeTipo_En_LeGananA tipo xs     []  = cantPokemonDeT tipo xs 
-cuantosDeTipo_En_LeGananA tipo (x:xs) ys  = if tipoDe x == tipo --aca filtro ya el tipo! 
-                                            then unoSiLeGana_ATodos x ys + cuantosDeTipo_En_LeGananA tipo xs ys 
-                                            else cuantosDeTipo_En_LeGananA tipo xs ys
+cantDeTipo :: TipoDePokemon -> [Pokemon] -> Int
+cantDeTipo t []     = 0
+cantDeTipo t (x:xs) = unoSiEsMismoTipo t (tipoDe x) + cantDeTipo t xs
 
-unoSiLeGana_ATodos :: Pokemon -> [Pokemon] -> Int
-unoSiLeGana_ATodos _ []     =  1
-unoSiLeGana_ATodos x (y:ys) =  unoSi_SuperaA_ x y * unoSiLeGana_ATodos tipo x ys
+esDeTipo :: TipoDePokemon -> TipoDePokemon -> Bool
+esDeTipo Agua Agua     = True
+esDeTipo Fuego Fuego   = True
+esDeTipo Planta Planta = True
+esDeTipo    _     _    = False
+
+tipoDe:: Pokemon -> TipoDePokemon
+tipoDe (ConsPokemon t _) = t
+
+unoSileGanaATodos :: Pokemon -> [Pokemon] -> Int
+unoSileGanaATodos _ []     = 1
+unoSileGanaATodos p (x:xs) = unoSi_SuperaA_ p x * unoSileGanaATodos p xs -- si a por lo menos 1 no le gana, ya me da 0 
 
 unoSi_SuperaA_ :: Pokemon -> Pokemon -> Int
-unoSi_SuperaA_ x y (PK tp1 _) (PK tp2 _) = unoSiEsTipoSuperior tp1 tp2 
+unoSi_SuperaA_ (ConsPokemon t1 _) (ConsPokemon t2 _) = unoSiEsTipoSuperior t1 t2
 
 unoSiEsTipoSuperior :: TipoDePokemon -> TipoDePokemon -> Int
 -- Dados dos tipos de Pokemon, devuelve 1 si el primero es superior al segundo
@@ -248,75 +247,81 @@ unoSiEsTipoSuperior Fuego  Planta = 1
 unoSiEsTipoSuperior Planta Agua   = 1
 unoSiEsTipoSuperior   _      _    = 0
 
--- Dado un entrenador, devuelve True si posee al menos un Pokémon de cada tipo posible.
-esMaestroPokemon :: Entrenador -> Bool
-esMaestroPokemon (E _ ps) = hayTodosLosTiposDePokemonesEn ps
 
-hayTodosLosTiposDePokemonesEn :: [Pokemon] -> Bool
-hayTodosLosTiposDePokemonesEn [] = False 
-hayTodosLosTiposDePokemonesEn ps = hayPokemonDeTipo Agua ps && hayPokemonDeTipo Fuego ps && hayPokemonDeTipo Planta ps
+--d 
+esMaestroPokemon :: Entrenador -> Bool --Dado un entrenador, devuelve True si posee al menos un Pokémon de cada tipo posible.
+esMaestroPokemon (ConsEntrenador _ ps) = hayDeLosTresTipos ps
 
-hayPokemonDeTipo ::  TipoDePokemon ->  [Pokemon] -> Bool
-hayPokemonDeTipo tipo (p:ps) = tipo == (tipoDe p)  || hayPokemonDeTipo tipo ps
-{-
-    3.3
-    El tipo de dato Rol representa los roles (desarollo o management) de empleados IT dentro
-    de una empresa de software, junto al proyecto en el que se encuentran. Así, una empresa es
-    una lista de personas con diferente rol. La definición es la siguiente:
--}
+hayDeLosTresTipos :: [Pokemon] -> Bool --Dada una lista de pokemon, indica si en la misma hay al menos un pokemon de cada tipo.
+hayDeLosTresTipos [] = False
+hayDeLosTresTipos ps =  hayPokemonDe Agua ps && hayPokemonDe Fuego ps && hayPokemonDe Planta ps
+
+hayPokemonDe :: TipoDePokemon -> [Pokemon] -> Bool
+hayPokemonDe _ []     = False
+hayPokemonDe t (p:ps) = elPokeEsDeTipo t p || hayPokemonDe t ps
+
+elPokeEsDeTipo :: TipoDePokemon -> Pokemon -> Bool
+elPokeEsDeTipo t1 (ConsPokemon t2 _) = esMismoTipo t1 t2
+
+esMismoTipo :: TipoDePokemon -> TipoDePokemon -> Bool
+esMismoTipo Agua Agua     = True
+esMismoTipo Fuego Fuego   = True
+esMismoTipo Planta Planta = True
+esMismoTipo    _     _    = False
+
+---------------3.ROL ---------------------
 
 data Seniority = Junior | SemiSenior | Senior
     deriving Show
 
-data Proyecto = PR String
+data Proyecto = ConsProyecto String
     deriving Show
 
 data Rol = Developer Seniority Proyecto | Management Seniority Proyecto
     deriving Show
 
-data Empresa = EM [Rol]
+data Empresa = ConsEmpresa [Rol]
     deriving Show
 
 
-proy1 = PR "Proy A"
-proy2 = PR "Proy B"
+proy1 = ConsProyecto "Proy A"
+proy2 = ConsProyecto "Proy B"
 
 rol1 = Developer Junior proy1
 rol2 = Management Senior proy2
 
-empresa = EM [rol1, rol2]
+empresa = ConsEmpresa [rol1, rol2]
 
--- Definir las siguientes funciones sobre el tipo Empresa:
+proyectos :: Empresa -> [Proyecto] -- Dada una empresa denota la lista de proyectos en los que trabaja, sin elementos repetidos.
+proyectos (ConsEmpresa rs) = proyectosSinRepetidos rs
 
--- Dada una empresa denota la lista de proyectos en los que trabaja, sin elementos repetidos.
-proyectos :: Empresa -> [Proyecto]
-proyectos (EM rs) = proyectosSinRepetidos rs
 
-proyectosSinRepetidos :: [Rol] -> [Proyecto] 
-proyectosSinRepetidos []     = []
-proyectosSinRepetidos (r:rs) = agregarProyectoSiNoEstaEn (proyectoDe r) (proyectosSinRepetidos rs)
+proyectosSinRepetidos :: [Rol] -> [Proyecto] -- Dada una lista de roles, devuelve una lista sin proyectos repetidos. 
+proyectosSinRepetidos [] = []
+proyectosSinRepetidos (r:rs) = agregarALaListaSiNoEsta (proyectoDe r) (proyectosSinRepetidos rs)
 
-agregarProyectoSiNoEstaEn :: Proyecto -> [Proyecto] -> [Proyecto]
-agregarProyectoSiNoEstaEn p  ps = if proyectoPerteneceALaLista p ps  then ps else p : ps
+agregarALaListaSiNoEsta :: Proyecto ->  [Proyecto] -> [Proyecto]
+agregarALaListaSiNoEsta p ps = if proyectoPerteneceALaLista p ps then ps else p : ps
 
 proyectoDe :: Rol -> Proyecto  -- Dado un rol, devuelve el proyecto
 proyectoDe (Developer _ p) = p
 proyectoDe (Management _ p) = p
+
 
 proyectoPerteneceALaLista :: Proyecto -> [Proyecto] -> Bool
 proyectoPerteneceALaLista _ [] = False
 proyectoPerteneceALaLista x (n:ns) =  (nombreProy x)== (nombreProy n) || (proyectoPerteneceALaLista x ns)
 
 nombreProy :: Proyecto -> String
-nombreProy (PR n) = n
+nombreProy (ConsProyecto n) = n
 
--- Dada una empresa indica la cantidad de desarrolladores senior que posee, que pertecen además a los proyectos dados por parámetro.
-losDevSenior :: Empresa -> [Proyecto] -> Int
-losDevSenior (EM rs) ps = devSeniorDe_QueTrabajaronEn rs ps 
+losDevSenior :: Empresa-> [Proyecto]-> Int -- Dada una empresa indica la cantidad de desarrolladores senior que posee, que pertecen
+                                                -- además a los proyectos dados por parámetro.
+losDevSenior (ConsEmpresa rs) ps = cantidadDevSeniorYDeProyectos rs ps 
 
-devSeniorDe_QueTrabajaronEn :: [Rol] -> [Proyecto] -> Int
-devSeniorDe_QueTrabajaronEn [] _      = 0
-devSeniorDe_QueTrabajaronEn (r:rs) ps = unoSiEsDevSeniorYSuProyectoPerteneceA (seniority r) (proyectoDe r) ps + cantidadDevSeniorYDeProyectos rs ps
+cantidadDevSeniorYDeProyectos :: [Rol] -> [Proyecto] -> Int
+cantidadDevSeniorYDeProyectos [] _      = 0
+cantidadDevSeniorYDeProyectos (r:rs) ps = unoSiEsDevSeniorYSuProyectoPerteneceA (seniority r) (proyectoDe r) ps + cantidadDevSeniorYDeProyectos rs ps
 
 unoSiEsDevSeniorYSuProyectoPerteneceA :: Seniority -> Proyecto -> [Proyecto] -> Int
 unoSiEsDevSeniorYSuProyectoPerteneceA Senior p ps = unoSiSuProyectoPerteneceA p ps 
@@ -329,21 +334,19 @@ seniority :: Rol -> Seniority
 seniority (Developer s _) = s
 seniority (Management s _) = s
 
--- Indica la cantidad de empleados que trabajan en alguno de los proyectos dados.
-cantQueTrabajanEn :: [Proyecto] -> Empresa -> Int
-cantQueTrabajanEn ps (EM rs) = cantEmpleadosDe_QueTrabajanEnAlgun ps rs 
+cantQueTrabajanEn :: [Proyecto]-> Empresa-> Int --Indica la cantidad de empleados que trabajan en alguno de los proyectos dados
+cantQueTrabajanEn ps (ConsEmpresa rs) = cantQueTrabajan ps rs
 
-cantEmpleadosDe_QueTrabajanEnAlgun :: [Proyecto] -> [Rol] -> Int
-cantEmpleadosDe_QueTrabajanEnAlgun _ []      = 0
-cantEmpleadosDe_QueTrabajanEnAlgun ps (r:rs) = unoSiTrabajaEnEnAlgunProyecto ps r + cantQueTrabajan ps rs
+cantQueTrabajan :: [Proyecto]-> [Rol] -> Int 
+cantQueTrabajan _ [] = 0
+cantQueTrabajan ps (r:rs) = unoSiTrabajaEnEnAlgunProyecto ps r + cantQueTrabajan ps rs
 
 unoSiTrabajaEnEnAlgunProyecto :: [Proyecto] -> Rol -> Int
 unoSiTrabajaEnEnAlgunProyecto ps (Developer _ p)  = unoSiSuProyectoPerteneceA p ps
 unoSiTrabajaEnEnAlgunProyecto ps (Management _ p) = unoSiSuProyectoPerteneceA p ps
 
--- Devuelve una lista de pares que representa a los proyectos (sin repetir) junto con su cantidad de personas involucradas.
 asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
-asignadosPorProyecto (EM rs) =  cantPorProyecto rs
+asignadosPorProyecto (ConsEmpresa rs) = cantPorProyecto rs
 
 cantPorProyecto :: [Rol] -> [(Proyecto, Int)]
 cantPorProyecto []      = []
@@ -366,4 +369,22 @@ esLaTupla p1 (p2, _) = nombreProy p1  == nombreProy p2
 sumarUnoA :: (Proyecto, Int) -> (Proyecto, Int) 
 sumarUnoA (p , n) = (p, n+1)
 
+---AUXILIARES PRACTICA 1  --
 
+sinElPrimero :: [a]-> [a]
+sinElPrimero (_:xs) = xs
+
+elPrimero :: [a]-> a
+elPrimero (x:_) = x
+
+esMayorQueLaOtra :: Persona-> Persona-> Bool
+
+esMayorQueLaOtra (P _ e1) (P _ e2) = e1 > e2
+
+laQueEsMayor :: Persona-> Persona-> Persona
+
+laQueEsMayor p1@(P _ e1) p2@(P _ e2) = if e1 >= e2
+           then p1
+           else p2
+
+--------------- FIN AUXILIARES PRACTICA 1  -----------------
