@@ -12,22 +12,47 @@ data Celda = Bolita Color Celda | CeldaVacia
     de bolitas de ese color en la celda. Por ejemplo, una celda con 2 bolitas azules y 2 rojas, podría
     ser la siguiente:
 -}
-b1 = Bolita Rojo (Bolita Azul (Bolita Rojo (Bolita Azul CeldaVacia)))
+c1 = Bolita Rojo (Bolita Azul (Bolita Rojo (Bolita Azul CeldaVacia)))
 -- Implementar las siguientes funciones sobre celdas:
 
 -- Dados un color y una celda, indica la cantidad de bolitas de ese color. Nota: pensar si ya
 -- existe una operación sobre listas que ayude a resolver el problema.
 nroBolitas :: Color -> Celda -> Int
+nroBolitas      _    CeldaVacia       = 0
+nroBolitas    color (Bolita col1 cel1) = unoSiSonDelMismoColor color col1  + nroBolitas color cel1
+
+unoSiSonDelMismoColor :: Color -> Color -> Int
+unoSiSonDelMismoColor col1 col2 = unoSi (esDelMismoColor col1 col2)
+
+unoSi :: Bool -> Int
+unoSi True  = 1
+unoSi False = 0
+
+singularSi :: a -> Bool -> [a]
+singularSi x True  = [x]
+singularSi x False = []
+
+
+esDelMismoColor :: Color -> Color -> Bool
+esDelMismoColor Azul Azul = True
+esDelMismoColor Rojo Rojo = True
+esDelMismoColor _ _       = False
 
 -- Dado un color y una celda, agrega una bolita de dicho color a la celda.
 poner :: Color -> Celda -> Celda
+poner col cel = Bolita c celda
 
 -- Dado un color y una celda, quita una bolita de dicho color de la celda. Nota: a diferencia de
 -- Gobstones, esta función es total.
 sacar :: Color -> Celda -> Celda
+sacar  _     CeldaVacia      = CeldaVacia
+sacar col (Bolita col1 cel1) = if esDelMismoColor col col1 then cel1 else Bolita col (sacar c cel)
 
 -- Dado un número n, un color c, y una celda, agrega n bolitas de color c a la celda.
 ponerN :: Int -> Color -> Celda -> Celda
+ponerN 0  _    cel              =  cel
+ponerN n col CeldaVacia         =  ponerN (n-1) col (Bolita col CeldaVacia)
+ponerN n col cel                =  ponerN (n-1) col (Bolita col cel)
 
 {-
     1.2.
@@ -39,21 +64,54 @@ data Objeto = Cacharro | Tesoro
 data Camino = Fin | Cofre [Objeto] Camino | Nada Camino
     deriving Show
 
+camino1 :: Camino
+camino1 = Cofre [Tesoro,Tesoro] (Cofre [Cacharro] (Nada (Cofre [] Fin)))
+
+
 -- Definir las siguientes funciones:
 
 -- Indica si hay un cofre con un tesoro en el camino.
 hayTesoro :: Camino -> Bool
+hayTesoro Fin       = False
+hayTesoro (Cofre objs camino) = hayTesoroEnObjetos objs  || hayTesoro camino
+hayTesoro (Nada camino)  = hayTesoro camino 
+
+hayTesoroEnObjetos :: [Objeto]  -> Bool
+hayTesoroEnObjetos _      = False   
+hayTesoroEnObjetos (o:ob) =    esTesoro o || hayTesoroEnObjetos ob
+
+esTesoro :: [Objeto]  -> Bool
+esTesoro Cacharro  = True 
+esTesoro Tesoro    = True
 
 -- Indica la cantidad de pasos que hay que recorrer hasta llegar al primer cofre con un tesoro.
 -- Si un cofre con un tesoro está al principio del camino, la cantidad de pasos a recorrer es 0.
 -- Precondición: tiene que haber al menos un tesoro.
 pasosHastaTesoro :: Camino -> Int
+pasosHastaTesoro Fin                 = 0
+pasosHastaTesoro (Cofre objs camino) = if hayTesoroEnObjetos objs then 0 else pasosHastaTesoro camino
+pasosHastaTesoro (Nada camino)       = 1 + pasosHastaTesoro camino
 
 -- Indica si hay un tesoro en una cierta cantidad exacta de pasos. Por ejemplo, si el número de pasos es 5, indica si hay un tesoro en 5 pasos.
 hayTesoroEn :: Int -> Camino -> Bool
+hayTesoroEn 0  camino              = hayTesoroAca camino
+hayTesoroEn n Fin                  = False 
+hayTesoroEn n (Cofre objs camino)  = hayTesoroEn (n-1) camino
+hayTesoroEn n (Nada camino)        = hayTesoroEn (n-1) camino
 
--- Indica si hay al menos ?n? tesoros en el camino.
+hayTesoroAca :: Camino -> Bool
+hayTesoroAca Fin = False
+hayTesoroAca (Cofre objs camino) = hayTesoroEnObjetos objs
+hayTesoroAca (Nada camino) = False
+
+-- Indica si hay al menos n tesoros en el camino.
 alMenosNTesoros :: Int -> Camino -> Bool
+alMenosNTesoros n camino = n => cantTesorosEnCamino camino
+
+cantTesorosEnCamino :: Camino -> Int
+cantTesorosEnCamino n Fin                  = 0
+cantTesorosEnCamino n (Cofre objs camino)  = 
+cantTesorosEnCamino n (Nada camino)        = 
 
 --- DESAFIO ---
 -- Dado un rango de pasos, indica la cantidad de tesoros que hay en ese rango. Por ejemplo, si
