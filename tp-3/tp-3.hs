@@ -110,14 +110,38 @@ alMenosNTesoros n camino = n => cantTesorosEnCamino camino
 
 cantTesorosEnCamino :: Camino -> Int
 cantTesorosEnCamino n Fin                  = 0
-cantTesorosEnCamino n (Cofre objs camino)  = 
-cantTesorosEnCamino n (Nada camino)        = 
+cantTesorosEnCamino n (Cofre objs camino)  = cantTesorosEnObjs objs + cantTesorosEnCamino camino
+cantTesorosEnCamino n (Nada camino)        = cantTesorosEnCamino camino
+
+cantTesorosEnObjs :: [Objeto] -> Int
+cantTesorosEnObjs []     = 0
+cantTesorosEnObjs (o:ob) = unoSiEsTesoro + cantTesorosEnObjs ob
+
+unoSiEsTesoro :: Objeto -> Int
+unoSiEsTesoro Cacharro = 0
+unoSiEsTesoro Tesoro   = 1
+
 
 --- DESAFIO ---
 -- Dado un rango de pasos, indica la cantidad de tesoros que hay en ese rango. Por ejemplo, si
 -- el rango es 3 y 5, indica la cantidad de tesoros que hay entre hacer 3 pasos y hacer 5. Están
 -- incluidos tanto 3 como 5 en el resultado.
 cantTesorosEntre :: Int -> Int -> Camino -> Int
+cantTesorosEntre 0 n camino              = tesorosHastaPaso n camino
+cantTesorosEntre x y Fin                 = 0
+cantTesorosEntre x y (Cofre objs camino) = cantTesorosEntre (x-1) (y-1) camino
+cantTesorosEntre x y (Nada  camino     ) = cantTesorosEntre (x-1) (y-1) camino
+
+tesorosHastaPaso :: Int -> Camino -> Int
+tesorosHastaPaso 0 camino              = cantTesorosEnPasoActual camino
+tesorosHastaPaso n Fin                 = 0
+tesorosHastaPaso n (Cofre objs camino) = cantTesorosEnObjs objs + tesorosHastaPaso (n-1) camino
+tesorosHastaPaso n (Nada  camino     ) = tesorosHastaPaso (n-1) camino
+
+cantTesorosEnPasoActual :: Camino -> Int
+cantTesorosEnPasoActual (Cofre objs camino) = cantTesorosEnObjs objs
+cantTesorosEnPasoActual       _             = 0
+
 
 ----- 2 TIPO ARBOLES -----
 
