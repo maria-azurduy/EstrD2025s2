@@ -153,21 +153,44 @@ cantTesorosEnPasoActual       _             = 0
 data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
     deriving Show
 
+t1 = EmptyT
+t2 = NodeT 10 EmptyT EmptyT
+t3 = NodeT 20
+            (NodeT 2 EmptyT EmptyT)
+            (NodeT 4 EmptyT EmptyT)
+t4 = NodeT 30 (NodeT 2  (NodeT 3 EmptyT EmptyT)
+                        (NodeT 4 EmptyT EmptyT))
+            (NodeT 4 EmptyT EmptyT)
+
+
 
 -- Dado un árbol binario de enteros devuelve la suma entre sus elementos.
 sumarT :: Tree Int -> Int
+sumarT EmptyT          = 0
+sumarT (NodeT n t1 t2) = n + sumarT t1 + sumarT t2
 
 -- Dado un árbol binario devuelve su cantidad de elementos, es decir, el tamaño del árbol (size en inglés).
 sizeT :: Tree a -> Int
+sizeT EmptyT          = 0
+sizeT (NodeT n t1 t2) = 1 + sizeT t1 + sizeT t2 
 
 -- Dado un árbol de enteros devuelve un árbol con el doble de cada número.
 mapDobleT :: Tree Int -> Tree Int
+mapDobleT EmptyT          = EmptyT
+mapDobleT (NodeT n t1 t2) = NodeT (n *2)  (mapDobleT t1) (mapDobleT t2)
 
 -- Dados un elemento y un árbol binario devuelve True si existe un elemento igual a ese en el árbol.
 perteneceT :: Eq a => a -> Tree a -> Bool
+perteneceT _ EmptyT          = False
+perteneceT x (NodeT n t1 t2) = (x == n) || perteneceT x t1  ||  perteneceT x t2
 
 -- Dados un elemento e y un árbol binario devuelve la cantidad de elementos del árbol que son iguales a e.
 aparicionesT :: Eq a => a -> Tree a -> Int
+aparicionesT  _ EmptyT          = 0
+aparicionesT  e (NodeT n t1 t2) = unoSiEsElMismoElemento e n + aparicionesT t1 +  aparicionesT t2
+
+unoSiEsElMismoElemento :: Eq a => a -> a -> Int 
+unoSiEsElMismoElemento a b = unoSi (a == b)
 
 -- Dado un árbol devuelve los elementos que se encuentran en sus hojas.
 -- NOTA: en este tipo se de?ne como hoja a un nodo con dos hijos vacíos
@@ -220,6 +243,10 @@ data ExpA = Valor Int
 
 -- Dada una expresión aritmética devuelve el resultado evaluarla.
 eval :: ExpA -> Int
+eval (Valor exp) = exp
+eval (Sum exp1  exp2) = eval exp1 + eval exp2
+eval (Prod exp1  exp2) = eval exp1 * eval exp2
+eval (Neg exp) = - (eval exp)
 
 {-
     Dada una expresión aritmética, la simpli?ca según los siguientes criterios (descritos utilizando notación matemática convencional):
@@ -229,3 +256,51 @@ eval :: ExpA -> Int
     d) - (- x) = x
 -}
 simplificar :: ExpA -> ExpA
+simplificar (Prod e1 e2) = simplificarProd (simplificar e1) (simplificar e2)
+simplificar (Sum e1 e2) = simplificarSum (simplificar e1) (simplificar e2)
+simplificar (Neg exp) = simplificarNeg (simplificar exp)
+simplificar exp = exp
+
+simplificarSum :: ExpA -> ExpA -> ExpA
+simplificarSum exp (Valor 0) = exp
+simplificarSum (Valor 0) exp = exp
+simplificarSum exp expp = Sum exp expp
+
+simplificarProd :: ExpA -> ExpA -> ExpA
+simplificarProd _ (Valor 0) = Valor 0
+simplificarProd (Valor 0) _ = Valor 0
+simplificarProd exp (Valor 1) = exp
+simplificarProd (Valor 1) e = e
+simplificarProd exp expp = Prod exp expp
+
+simplificarNeg :: ExpA -> ExpA
+simplificarNeg (Neg exp) = exp
+simplificarNeg exp = Neg exp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
