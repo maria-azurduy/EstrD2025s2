@@ -195,28 +195,57 @@ unoSiEsElMismoElemento a b = unoSi (a == b)
 -- Dado un árbol devuelve los elementos que se encuentran en sus hojas.
 -- NOTA: en este tipo se de?ne como hoja a un nodo con dos hijos vacíos
 leaves :: Tree a -> [a]
+leaves EmptyT          = []
+leaves (NodeT n t1 t2) = if (isEmptyT t1 && isEmptyT t2) 
+                            then [x] 
+                            else leaves t1 ++ leaves t2
+
+isEmptyT :: Tree a -> Bool
+isEmptyT EmptyT = True
+isEmptyT _ = False 
 
 -- Dado un árbol devuelve su altura.
 -- Nota: la altura de un árbol (height en inglés), también llamada profundidad, es la cantidad de niveles del árbol1. La altura para EmptyT es 0, y para una hoja es 1.
 heightT :: Tree a -> Int
+heightT EmptyT          = 0
+heightT (NodeT n t1 t2) = 1 + max (heightT t1) (heightT t2)
 
 -- Dado un árbol devuelve el árbol resultante de intercambiar el hijo izquierdo con el derecho, en cada nodo del árbol.
 mirrorT :: Tree a -> Tree a
+mirrorT EmptyT          = EmptyT
+mirrorT (NodeT n t1 t2) = (NodeT n (mirrorT t2) (mirrorT t1) )
 
 -- Dado un árbol devuelve una lista que representa el resultado de recorrerlo en modo in-order.
 -- Nota: En el modo in-order primero se procesan los elementos del hijo izquierdo, luego la raiz y luego los elementos del hijo derecho.
 toList :: Tree a -> [a]
+toList EmptyT          = []
+toList (NodeT n t1 t2) = n : toList t1 ++ toList t2  -- (parecido a sumarT)
 
 -- Dados un número n y un árbol devuelve una lista con los nodos de nivel n. El nivel de un nodo es la distancia que hay de la raíz hasta él. La distancia de la raiz a sí misma es 0, y la distancia de la raiz a uno de sus hijos es 1.
 -- Nota: El primer nivel de un árbol (su raíz) es 0.
 levelN :: Int -> Tree a -> [a]
+levelN _ EmptyT = 0
+levelN 0 (NodeT x t1 t2) = [x]
+levelN n (NodeT x t1 t2) = levelN (n-1) t1 ++ levelN (n-1) t2 
 
 -- Dado un árbol devuelve una lista de listas en la que cada elemento representa un nivel de dicho árbol.
 listPerLevel :: Tree a -> [[a]]
+listPerLevel EmptyT          = []
+listPerLevel (NodeT x t1 t2) = [x] : unirListasDeNiveles (listPerLevel t1) (listPerLevel t2) 
+
+unirListasDeNiveles :: [[a]] -> [[a]] -> [[a]]
+unirListasDeNiveles [] ys = ys 
+unirListasDeNiveles xs [] = xs
+unirListasDeNiveles (x:xs) (y:ys) = x : y :  unirListasDeNiveles xs ys 
 
 -- Devuelve los elementos de la rama más larga del árbol
 ramaMasLarga :: Tree a -> [a]
+ramaMasLarga EmptyT          = []
+ramaMasLarga (NodeT x t1 t2) = x : ramaMasLarga (ramaMasLargaEntre t1 t2)
 
+ramaMasLargaEntre :: Tree a -> Tree a -> Tree a
+ramaMasLargaEntre t1 t2 = if (heightT t1 > heightT t2) then t1 else t2 
+ 
 {-
     Dado un árbol devuelve todos los caminos, es decir, los caminos desde la raíz hasta cualquiera de los nodos.
     ATENCIÓN: se trata de todos los caminos, y no solamente de los maximales (o sea, de la raíz hasta la hoja), o sea, por ejemplo:
@@ -226,8 +255,7 @@ ramaMasLarga :: Tree a -> [a]
                                                 EmptyT))
             
             = [ [1], [1,2], [1,2,3], [1,4], [1,4,5] ]
-    OBSERVACIÓN: puede resultar interesante plantear otra función, variación de
-    ésta para devolver solamente los caminos maximales.
+    OBSERVACIÓN: puede resultar interesante plantear otra función, variación de ésta para devolver solamente los caminos maximales.
 -}
 todosLosCaminos :: Tree a -> [[a]]
 
