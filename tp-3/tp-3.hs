@@ -106,7 +106,7 @@ hayTesoroAca (Nada camino) = False
 
 -- Indica si hay al menos n tesoros en el camino.
 alMenosNTesoros :: Int -> Camino -> Bool
-alMenosNTesoros n camino = n => cantTesorosEnCamino camino
+alMenosNTesoros n camino = n <= cantTesorosEnCamino camino
 
 cantTesorosEnCamino :: Camino -> Int
 cantTesorosEnCamino n Fin                  = 0
