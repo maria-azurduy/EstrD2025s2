@@ -40,13 +40,13 @@ esDelMismoColor _ _       = False
 
 -- Dado un color y una celda, agrega una bolita de dicho color a la celda.
 poner :: Color -> Celda -> Celda
-poner col cel = Bolita c celda
+poner c celda = Bolita c celda
 
 -- Dado un color y una celda, quita una bolita de dicho color de la celda. Nota: a diferencia de
 -- Gobstones, esta función es total.
 sacar :: Color -> Celda -> Celda
 sacar  _     CeldaVacia      = CeldaVacia
-sacar col (Bolita col1 cel1) = if esDelMismoColor col col1 then cel1 else Bolita col (sacar c cel)
+sacar col (Bolita col1 cel1) = if esDelMismoColor col col1 then cel1 else Bolita col (sacar c cel1)
 
 -- Dado un número n, un color c, y una celda, agrega n bolitas de color c a la celda.
 ponerN :: Int -> Color -> Celda -> Celda
@@ -77,7 +77,7 @@ hayTesoro (Cofre objs camino) = hayTesoroEnObjetos objs  || hayTesoro camino
 hayTesoro (Nada camino)  = hayTesoro camino 
 
 hayTesoroEnObjetos :: [Objeto]  -> Bool
-hayTesoroEnObjetos _      = False   
+hayTesoroEnObjetos []     = False   
 hayTesoroEnObjetos (o:ob) =    esTesoro o || hayTesoroEnObjetos ob
 
 esTesoro :: [Objeto]  -> Bool
@@ -109,13 +109,13 @@ alMenosNTesoros :: Int -> Camino -> Bool
 alMenosNTesoros n camino = n <= cantTesorosEnCamino camino
 
 cantTesorosEnCamino :: Camino -> Int
-cantTesorosEnCamino n Fin                  = 0
-cantTesorosEnCamino n (Cofre objs camino)  = cantTesorosEnObjs objs + cantTesorosEnCamino camino
-cantTesorosEnCamino n (Nada camino)        = cantTesorosEnCamino camino
+cantTesorosEnCamino  Fin                  = 0
+cantTesorosEnCamino  (Cofre objs camino)  = cantTesorosEnObjs objs + cantTesorosEnCamino camino
+cantTesorosEnCamino  (Nada camino)        = cantTesorosEnCamino camino
 
 cantTesorosEnObjs :: [Objeto] -> Int
 cantTesorosEnObjs []     = 0
-cantTesorosEnObjs (o:ob) = unoSiEsTesoro + cantTesorosEnObjs ob
+cantTesorosEnObjs (o:ob) = unoSiEsTesoro o + cantTesorosEnObjs ob
 
 unoSiEsTesoro :: Objeto -> Int
 unoSiEsTesoro Cacharro = 0
@@ -187,7 +187,7 @@ perteneceT x (NodeT n t1 t2) = (x == n) || perteneceT x t1  ||  perteneceT x t2
 -- Dados un elemento e y un árbol binario devuelve la cantidad de elementos del árbol que son iguales a e.
 aparicionesT :: Eq a => a -> Tree a -> Int
 aparicionesT  _ EmptyT          = 0
-aparicionesT  e (NodeT n t1 t2) = unoSiEsElMismoElemento e n + aparicionesT t1 +  aparicionesT t2
+aparicionesT  e (NodeT n t1 t2) = unoSiEsElMismoElemento e n + aparicionesT e t1 +  aparicionesT e t2
 
 unoSiEsElMismoElemento :: Eq a => a -> a -> Int 
 unoSiEsElMismoElemento a b = unoSi (a == b)
@@ -213,7 +213,7 @@ heightT (NodeT n t1 t2) = 1 + max (heightT t1) (heightT t2)
 -- Dado un árbol devuelve el árbol resultante de intercambiar el hijo izquierdo con el derecho, en cada nodo del árbol.
 mirrorT :: Tree a -> Tree a
 mirrorT EmptyT          = EmptyT
-mirrorT (NodeT n t1 t2) = (NodeT n (mirrorT t2) (mirrorT t1) )
+mirrorT (NodeT n t1 t2) = (NodeT n (mirrorT t2) (mirrorT t1))
 
 -- Dado un árbol devuelve una lista que representa el resultado de recorrerlo en modo in-order.
 -- Nota: En el modo in-order primero se procesan los elementos del hijo izquierdo, luego la raiz y luego los elementos del hijo derecho.
@@ -225,13 +225,13 @@ toList (NodeT n t1 t2) = n : toList t1 ++ toList t2  -- (parecido a sumarT)
 -- Nota: El primer nivel de un árbol (su raíz) es 0.
 levelN :: Int -> Tree a -> [a]
 levelN _ EmptyT = 0
-levelN 0 (NodeT x t1 t2) = [x]
-levelN n (NodeT x t1 t2) = levelN (n-1) t1 ++ levelN (n-1) t2 
+levelN 0 (NodeT n t1 t2) = [n]
+levelN m (NodeT n t1 t2) = levelN (m-1) t1 ++ levelN (m-1) t2 
 
 -- Dado un árbol devuelve una lista de listas en la que cada elemento representa un nivel de dicho árbol.
 listPerLevel :: Tree a -> [[a]]
 listPerLevel EmptyT          = []
-listPerLevel (NodeT x t1 t2) = [x] : unirListasDeNiveles (listPerLevel t1) (listPerLevel t2) 
+listPerLevel (NodeT n t1 t2) = [n] : unirListasDeNiveles (listPerLevel t1) (listPerLevel t2) 
 
 unirListasDeNiveles :: [[a]] -> [[a]] -> [[a]]
 unirListasDeNiveles [] ys = ys 
@@ -241,7 +241,7 @@ unirListasDeNiveles (x:xs) (y:ys) = x : y :  unirListasDeNiveles xs ys
 -- Devuelve los elementos de la rama más larga del árbol
 ramaMasLarga :: Tree a -> [a]
 ramaMasLarga EmptyT          = []
-ramaMasLarga (NodeT x t1 t2) = x : ramaMasLarga (ramaMasLargaEntre t1 t2)
+ramaMasLarga (NodeT n t1 t2) = n : ramaMasLarga (ramaMasLargaEntre t1 t2)
 
 ramaMasLargaEntre :: Tree a -> Tree a -> Tree a
 ramaMasLargaEntre t1 t2 = if (heightT t1 > heightT t2) then t1 else t2 
