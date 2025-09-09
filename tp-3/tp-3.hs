@@ -200,7 +200,7 @@ mirrorT (NodeT x t1 t2) = (NodeT x (mirrorT t2) (mirrorT t1))
 
 toList :: Tree a-> [a]
 toList EmptyT           = []
-toList (NodeT x t1 t2)  = x : toList t1 ++ toList t2
+toList (NodeT x t1 t2)  = toList t1 ++ [x] ++ toList t2
 
 levelN :: Int-> Tree a-> [a]
 levelN _ EmptyT          = []
@@ -214,7 +214,7 @@ listPerLevel (NodeT x t1 t2) = [x] : unirListasDeNodos (listPerLevel t1) (listPe
 unirListasDeNodos :: [[a]] -> [[a]] -> [[a]]
 unirListasDeNodos [] ys = ys 
 unirListasDeNodos xs [] = xs
-unirListasDeNodos (x:xs) (y:ys) = x : y :  unirListasDeNodos xs ys 
+unirListasDeNodos (x:xs) (y:ys) = (x ++ y) : unirListasDeNodos xs ys 
 
 ramaMasLarga :: Tree a-> [a]
 ramaMasLarga EmptyT          = []
@@ -266,3 +266,4 @@ simplificarProd exp expp = Prod exp expp
 simplificarNeg :: ExpA -> ExpA
 simplificarNeg (Neg exp) = exp
 simplificarNeg exp = Neg exp
+
