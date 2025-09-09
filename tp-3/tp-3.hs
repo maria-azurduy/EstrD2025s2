@@ -194,9 +194,9 @@ heightT  :: Tree a-> Int
 heightT  EmptyT = 0
 heightT  (NodeT x t1 t2)  = 1 + max (heightT t1) (heightT t2)
 
-mirroT :: Tree a -> Tree a
-mirroT EmptyT = EmptyT
-mirroT (NodeT x t1 t2) = (NodeT x (mirroT t2) (mirroT t1))
+mirrorT :: Tree a -> Tree a
+mirrorT EmptyT = EmptyT
+mirrorT (NodeT x t1 t2) = (NodeT x (mirrorT t2) (mirrorT t1))
 
 toList :: Tree a-> [a]
 toList EmptyT           = []
