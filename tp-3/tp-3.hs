@@ -212,9 +212,9 @@ listPerLevel EmptyT          = []
 listPerLevel (NodeT x t1 t2) = [x] : unirListasDeNodos (listPerLevel t1) (listPerLevel t2) 
 
 unirListasDeNodos :: [[a]] -> [[a]] -> [[a]]
-unirListasDeNodos [] ys = ys 
-unirListasDeNodos xs [] = xs
-unirListasDeNodos (x:xs) (y:ys) = (x ++ y) : unirListasDeNodos xs ys 
+unirListasDeNodos [] yss = yss
+unirListasDeNodos xss [] = xss
+unirListasDeNodos (xs:xss) (ys:yss) = (xs ++ ys) : unirListasDeNodos xss yss 
 
 ramaMasLarga :: Tree a-> [a]
 ramaMasLarga EmptyT          = []
@@ -266,4 +266,5 @@ simplificarProd exp expp = Prod exp expp
 simplificarNeg :: ExpA -> ExpA
 simplificarNeg (Neg exp) = exp
 simplificarNeg exp = Neg exp
+
 
