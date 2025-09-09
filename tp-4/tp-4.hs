@@ -18,12 +18,14 @@ pizza3 = Capa Queso(Capa Jamon Prepizza)
 
 --Dada una pizza devuelve la cantidad de ingredientes
 cantidadDeCapas :: Pizza -> Int
-
+cantidadDeCapas Prepizza                 = 0
+cantidadDeCapas (Capa Ingrediente Pizza) = 1 + cantidadDeCapas Pizza
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --Dada una lista de ingredientes construye una pizza
 armarPizza :: [Ingrediente] -> Pizza
-
+armarPizza []     = Prepizza
+armarPizza (i:is) = armarPizza is (Capa i Pizza) 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --Le saca los ingredientes que sean jamón a la pizza
