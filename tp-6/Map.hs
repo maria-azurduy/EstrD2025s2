@@ -1,13 +1,3 @@
-{-
-La interfaz del tipo abstracto Map es la siguiente:
-
-1. Como una lista de pares-clave valor sin claves repetidas
--}
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use foldr" #-}
-{-# HLINT ignore "Eta reduce" #-}
-{-# HLINT ignore "Use map" #-}
-{-# HLINT ignore "Use foldl" #-}
 
 module Map
     (Map, emptyM, assocM, lookupM, deleteM, keys)
