@@ -11,9 +11,15 @@ Par consPar(int b, int c) {
 
 }
 
+
+
 int fst(Par p) {
     return p.x;
 }
+
+/* void show(Par p) {
+    cout<< "(" << p.x + ","  + p.y + ")" <<endl;
+} */
 
 int snd(Par p) {
     return p.y;
